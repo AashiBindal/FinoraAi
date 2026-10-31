@@ -1,0 +1,92 @@
+### Personal Finance Coach - End-to-End Test Requests
+@baseUrl = http://localhost:8080/api
+
+### 1. Register a New User
+# @name register
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "fullName": "Test User",
+  "email": "test@finance.com",
+  "password": "Password@123"
+}
+
+### 2. Login to get JWT Token
+# @name login
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "demo@finance.com",
+  "password": "Demo@1234"
+}
+
+### Capture JWT Token from response
+@authToken = {{login.response.body.token}}
+
+### 3. Get User Profile
+GET {{baseUrl}}/users/profile
+Authorization: Bearer {{authToken}}
+
+### 4. Seed Demo Ledger (4 months of data)
+POST {{baseUrl}}/demo/seed
+Authorization: Bearer {{authToken}}
+
+### 5. Get Living Money Model (The dynamic engine)
+GET {{baseUrl}}/finance/model
+Authorization: Bearer {{authToken}}
+
+### 6. List Transactions (with category filter)
+GET {{baseUrl}}/transactions?category=FOOD&page=0&size=10
+Authorization: Bearer {{authToken}}
+
+### 7. Record a New Expense (Demonstrating dynamic model change)
+POST {{baseUrl}}/transactions
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "type": "EXPENSE",
+  "amount": 2500.00,
+  "category": "FOOD",
+  "description": "Team Dinner at Smoke House Deli",
+  "transactionDate": "2026-10-31"
+}
+
+### 8. Re-check Living Money Model (Proof numbers updated dynamically)
+GET {{baseUrl}}/finance/model
+Authorization: Bearer {{authToken}}
+
+### 9. Get Budget Status (Alerts on exceeded categories)
+GET {{baseUrl}}/budgets/status
+Authorization: Bearer {{authToken}}
+
+### 10. List Financial Goals
+GET {{baseUrl}}/goals
+Authorization: Bearer {{authToken}}
+
+### 11. AI Coach - Chat (Grounded in real numbers)
+POST {{baseUrl}}/ai/chat
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "message": "Where am I overspending the most, and can I afford a ₹25,000 purchase?"
+}
+
+### 12. AI Coach - Monthly Insights
+GET {{baseUrl}}/ai/insights
+Authorization: Bearer {{authToken}}
+
+### 13. AI Coach - Deep Spending Analysis
+POST {{baseUrl}}/ai/analyze
+Authorization: Bearer {{authToken}}
+
+### 14. AI Coach - 50/30/20 Budget Suggestions
+GET {{baseUrl}}/ai/budget-suggestions
+Authorization: Bearer {{authToken}}
+
+### 15. AI Coach - 3-Month Financial Forecast
+GET {{baseUrl}}/ai/forecast?months=3
+Authorization: Bearer {{authToken}}
